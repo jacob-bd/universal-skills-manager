@@ -15,7 +15,7 @@
 
 ---
 
-**v1.12.0** · Three-source skill discovery · 10 supported AI tools · Cross-tool sync status reporter · ChatGPT cloud upload · Hardened security scanning
+**v1.13.0** · Three-source skill discovery · 11 supported AI tools · Cross-tool sync status reporter · ChatGPT cloud upload · Hardened security scanning
 
 A centralized skill manager for AI coding assistants. Discovers, installs, and synchronizes skills from multiple sources — [SkillsMP.com](https://skillsmp.com) (curated, AI semantic search), [SkillHub](https://skills.palebluedot.live) (community skills, no API key required), and [ClawHub](https://clawhub.ai) (versioned skills, semantic search, no API key required) — across multiple AI tools including Claude Code, OpenAI Codex, Gemini CLI, and more.
 
@@ -84,7 +84,7 @@ sh /tmp/install.sh --tools claude,gemini
 curl -fsSL https://raw.githubusercontent.com/jacob-bd/universal-skills-manager/main/install.sh | sh -s -- --tools codex
 ```
 
-**Supported `--tools` values:** `claude`, `gemini`, `antigravity`, `opencode`, `openclaw`, `alef-agent`, `codex`, `goose`, `roo`, `cursor`, `cline` (`gemini` and `codex` both install to `~/.agents/skills/`)
+**Supported `--tools` values:** `claude`, `gemini`, `antigravity`, `opencode`, `openclaw`, `alef-agent`, `codex`, `goose`, `roo`, `cursor`, `cline`, `hermes` (`gemini` and `codex` both install to `~/.agents/skills/`)
 
 > **Note:** The installer automatically installs to **all** detected AI tools without prompting for confirmation. If you only want to install to specific tools, use the `--tools` flag to target them explicitly.
 
@@ -133,6 +133,7 @@ Once installed, just ask your AI assistant:
 | **block/goose** | `~/.config/goose/skills/` | `./.goose/agents/` |
 | **Roo Code** | `~/.roo/skills/` | `./.roo/skills/` |
 | **Cline** | `~/.cline/skills/` | `./.cline/skills/` |
+| **Hermes Agent** | `~/.hermes/skills/` | `./.hermes/skills/` |
 
 ## Cloud Platforms (claude.ai, Claude Desktop, ChatGPT)
 

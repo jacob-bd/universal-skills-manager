@@ -17,6 +17,7 @@ Features:
 
 import argparse
 import ast
+import io
 import json
 import os
 import re
@@ -30,6 +31,10 @@ import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
+
+if sys.platform == "win32" and not os.environ.get("PYTHONIOENCODING"):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 VERSION = "1.4.0"
 

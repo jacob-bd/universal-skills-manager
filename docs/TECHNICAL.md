@@ -96,7 +96,7 @@ python3 path/to/sync_skills.py --verbose
 
 **Script features:**
 - Zero dependencies (Python 3 stdlib only)
-- Detects all 10 supported AI tools by probing for their skills directories
+- Detects all 11 supported AI tools by probing for their skills directories
 - Supports both user-level (global) and project-level (local) scopes
 - Compares directory content using MD5 hashes (not just modification times)
 - Reports four statuses: **in sync** (identical hashes), **out of sync** (2 distinct versions, identifies newest by mtime), **conflict** (3+ distinct versions, multi-way divergence), **single-tool only** (informational)

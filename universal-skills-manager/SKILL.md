@@ -9,7 +9,7 @@ metadata:
   primaryEnv: SKILLSMP_API_KEY
 ---
 
-<!-- Version: 1.12.0 -->
+<!-- Version: 1.13.0 -->
 
 # Universal Skills Manager
 
@@ -41,6 +41,7 @@ This skill manages the following tools and scopes. Always verify these paths exi
 | **Roo Code** | `~/.roo/skills/` | `./.roo/skills/` |
 | **Cursor** | `~/.cursor/skills/` | `./.cursor/skills/` |
 | **Cline** | `~/.cline/skills/` | `./.cline/skills/` |
+| **Hermes Agent** | `~/.hermes/skills/` | `./.hermes/skills/` |
 
 *Note: Gemini CLI (v0.30+) and OpenAI Codex both use `~/.agents/skills/` as their skills directory. Gemini CLI also reads `~/.gemini/skills/` but gives `.agents/skills/` higher precedence. To avoid duplicate-skill conflicts, we install to `~/.agents/skills/` only, which serves both tools.*
 
@@ -350,12 +351,13 @@ This skill (Universal Skills Manager) requires network access to call the Skills
     ls -d ~/.roo/skills 2>/dev/null && echo "Roo: ✓"
     ls -d ~/.config/goose/skills 2>/dev/null && echo "Goose: ✓"
     ls -d ~/.cline/skills 2>/dev/null && echo "Cline: ✓"
+    ls -d ~/.hermes/skills 2>/dev/null && echo "Hermes Agent: ✓"
     ```
 
 2.  **Collect All Skills:**
     For each detected tool, list skill folders:
     ```bash
-    find ~/.{claude,agents,gemini/antigravity,openclaw/workspace,alef-agent/workspace,cursor,config/opencode,config/goose,roo,cline}/skills -maxdepth 1 -type d 2>/dev/null | \
+    find ~/.{claude,agents,gemini/antigravity,openclaw/workspace,alef-agent/workspace,cursor,config/opencode,config/goose,roo,cline,hermes}/skills -maxdepth 1 -type d 2>/dev/null | \
       xargs -I{} basename {} | sort -u
     ```
 

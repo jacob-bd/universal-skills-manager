@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2026-05-11
+
+### Added
+- **Hermes Agent support**: Added Hermes Agent (NousResearch) as the 11th supported AI tool. User scope: `~/.hermes/skills/`. Project scope: `.hermes/skills/`.
+- Hermes detection in `install.sh` one-liner installer (`--tools hermes`).
+- Hermes included in Skill Matrix Report tool detection and skill collection.
+
+### Fixed
+- **Windows Unicode encoding**: All four Python CLI scripts (`sync_skills.py`, `install_skill.py`, `validate_frontmatter.py`, `scan_skill.py`) now force UTF-8 stdout/stderr on Windows, fixing `UnicodeEncodeError` crashes caused by cp1252 console encoding when outputting Unicode characters (✓, ✗, ⚠, etc.).
+
+### Changed
+- Tool count updated from 10 to 11 across all documentation.
+
+### Updated files
+- `sync_skills.py`: Added Hermes Agent entry, Windows UTF-8 fix.
+- `install_skill.py`: Windows UTF-8 fix.
+- `validate_frontmatter.py`: Windows UTF-8 fix.
+- `scan_skill.py`: Windows UTF-8 fix.
+- `SKILL.md`: Updated ecosystem table, matrix report detection, find command.
+- `CLAUDE.md`: Updated ecosystem table, tool count.
+- `README.md`: Updated version header, `--tools` help text, supported tools table, tool count.
+- `docs/TECHNICAL.md`: Updated tool count.
+- `install.sh`: Added Hermes detection, help text, and `--tools hermes` filter.
+
 ## [1.12.0] - 2026-04-22
 
 ### Added

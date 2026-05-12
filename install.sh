@@ -101,7 +101,7 @@ Options:
   --tools LIST      Comma-separated list of tools to install to
                     (skips auto-detection)
                     Valid: claude,gemini,antigravity,opencode,openclaw,
-                           alef-agent,codex,goose,roo,cursor,cline
+                           alef-agent,codex,goose,roo,cursor,cline,hermes
                     (gemini and codex both install to ~/.agents/skills/)
 
 Examples:
@@ -175,6 +175,7 @@ detect_tools() {
     check_tool "Roo Code"           "$HOME/.roo"                "$HOME/.roo/skills"
     check_tool "Cursor"             "$HOME/.cursor"             "$HOME/.cursor/skills"
     check_tool "Cline"              "$HOME/.cline"              "$HOME/.cline/skills"
+    check_tool "Hermes Agent"       "$HOME/.hermes"             "$HOME/.hermes/skills"
 
     if [ "$DETECTED_COUNT" -eq 0 ]; then
         echo ""
@@ -245,6 +246,7 @@ filter_tools() {
             roo)          match="Roo Code" ;;
             cursor)       match="Cursor" ;;
             cline)        match="Cline" ;;
+            hermes)       match="Hermes Agent" ;;
             *)
                 warn "Unknown tool: $short_name (skipping)"
                 continue

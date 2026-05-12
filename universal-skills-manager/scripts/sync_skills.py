@@ -18,12 +18,17 @@ Usage:
 
 import argparse
 import hashlib
+import io
 import json
 import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
+
+if sys.platform == "win32" and not os.environ.get("PYTHONIOENCODING"):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 VERSION = "1.3.0"
 
@@ -97,6 +102,12 @@ TOOLS = [
         "name": "Cline",
         "user_path": "~/.cline/skills",
         "project_path": ".cline/skills",
+    },
+    {
+        "id": "hermes",
+        "name": "Hermes Agent",
+        "user_path": "~/.hermes/skills",
+        "project_path": ".hermes/skills",
     },
 ]
 

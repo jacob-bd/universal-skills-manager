@@ -30,6 +30,7 @@ Exit codes:
     2 - Error (file not found, parse error, etc.)
 """
 
+import io
 import re
 import sys
 import os
@@ -38,6 +39,10 @@ import tempfile
 import shutil
 import zipfile
 from pathlib import Path
+
+if sys.platform == "win32" and not os.environ.get("PYTHONIOENCODING"):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 VERSION = "1.0.0"
 
