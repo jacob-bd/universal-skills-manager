@@ -108,6 +108,7 @@ TOOLS = [
         "name": "Hermes Agent",
         "user_path": "~/.hermes/skills",
         "project_path": ".hermes/skills",
+        "env_override": "HERMES_HOME",
     },
 ]
 
@@ -221,7 +222,12 @@ def detect_tools(
     """
     detected = []
     for tool in TOOLS:
-        user_dir = resolve_tool_path(tool["user_path"], home)
+        env_var = tool.get("env_override")
+        env_val = os.environ.get(env_var) if env_var and home is None else None
+        if env_val:
+            user_dir = Path(env_val) / "skills"
+        else:
+            user_dir = resolve_tool_path(tool["user_path"], home)
         if user_dir.is_dir():
             detected.append({
                 "id": tool["id"],

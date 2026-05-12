@@ -175,7 +175,7 @@ detect_tools() {
     check_tool "Roo Code"           "$HOME/.roo"                "$HOME/.roo/skills"
     check_tool "Cursor"             "$HOME/.cursor"             "$HOME/.cursor/skills"
     check_tool "Cline"              "$HOME/.cline"              "$HOME/.cline/skills"
-    check_tool "Hermes Agent"       "$HOME/.hermes"             "$HOME/.hermes/skills"
+    check_tool_hermes
 
     if [ "$DETECTED_COUNT" -eq 0 ]; then
         echo ""
@@ -211,6 +211,18 @@ check_tool_gemini_codex() {
 "
         DETECTED_COUNT=$((DETECTED_COUNT + 1))
         success "Found: Gemini CLI / Codex"
+    fi
+}
+
+check_tool_hermes() {
+    # Hermes Agent: $HERMES_HOME overrides ~/.hermes (common on Windows where
+    # it defaults to AppData\Local\hermes).
+    HERMES_DIR="${HERMES_HOME:-$HOME/.hermes}"
+    if [ -d "$HERMES_DIR" ]; then
+        DETECTED_TOOLS="${DETECTED_TOOLS}Hermes Agent|${HERMES_DIR}/skills
+"
+        DETECTED_COUNT=$((DETECTED_COUNT + 1))
+        success "Found: Hermes Agent"
     fi
 }
 
