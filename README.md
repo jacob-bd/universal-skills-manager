@@ -15,7 +15,7 @@
 
 ---
 
-**v1.13.0** · Three-source skill discovery · 11 supported AI tools · Cross-tool sync status reporter · ChatGPT cloud upload · Hardened security scanning
+**v1.13.1** · Three-source skill discovery · 12 supported AI tools · Cross-tool sync status reporter · ChatGPT cloud upload · Hardened security scanning
 
 A centralized skill manager for AI coding assistants. Discovers, installs, and synchronizes skills from multiple sources — [SkillsMP.com](https://skillsmp.com) (curated, AI semantic search), [SkillHub](https://skills.palebluedot.live) (community skills, no API key required), and [ClawHub](https://clawhub.ai) (versioned skills, semantic search, no API key required) — across multiple AI tools including Claude Code, OpenAI Codex, Gemini CLI, and more.
 
@@ -127,6 +127,7 @@ Once installed, just ask your AI assistant:
 | **Cursor** | `~/.cursor/skills/` | `./.cursor/skills/` |
 | **Gemini CLI / Codex** | `~/.agents/skills/` | `./.agents/skills/` |
 | **Google Anti-Gravity** | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
+| **Google Anti-Gravity CLI** | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
 | **OpenCode** | `~/.config/opencode/skills/` | `./.opencode/skills/` |
 | **OpenClaw** | `~/.openclaw/workspace/skills/` | `./.openclaw/skills/` |
 | **Alef Agent** | `~/.alef-agent/workspace/skills/` | N/A (daemon, no project scope) |

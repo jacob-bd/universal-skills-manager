@@ -58,6 +58,7 @@ The skill manages skills across these AI tools and their respective paths:
 |------|---------------------|----------------------|
 | Gemini CLI / Codex | `~/.agents/skills/` | `./.agents/skills/` |
 | Google Anti-Gravity | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
+| Google Anti-Gravity CLI | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
 | OpenCode | `~/.config/opencode/skills/` | `./.opencode/skills/` |
 | OpenClaw | `~/.openclaw/workspace/skills/` | `./.openclaw/skills/` |
 | Alef Agent | `~/.alef-agent/workspace/skills/` | N/A (daemon, no project scope) |

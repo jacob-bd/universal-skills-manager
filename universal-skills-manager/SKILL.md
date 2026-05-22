@@ -9,7 +9,7 @@ metadata:
   primaryEnv: SKILLSMP_API_KEY
 ---
 
-<!-- Version: 1.13.0 -->
+<!-- Version: 1.13.1 -->
 
 # Universal Skills Manager
 
@@ -33,6 +33,7 @@ This skill manages the following tools and scopes. Always verify these paths exi
 | :--- | :--- | :--- |
 | **Gemini CLI / Codex** | `~/.agents/skills/` | `./.agents/skills/` |
 | **Google Anti-Gravity** | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
+| **Google Anti-Gravity CLI** | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
 | **OpenCode** | `~/.config/opencode/skills/` | `./.opencode/skills/` |
 | **OpenClaw** | `~/.openclaw/workspace/skills/` | `./.openclaw/skills/` |
 | **Alef Agent** | `~/.alef-agent/workspace/skills/` | N/A (daemon, no project scope) |

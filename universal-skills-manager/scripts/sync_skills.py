@@ -55,6 +55,12 @@ TOOLS = [
         "project_path": ".antigravity/extensions",
     },
     {
+        "id": "anti-gravity-cli",
+        "name": "Google Anti-Gravity CLI",
+        "user_path": "~/.gemini/antigravity-cli/skills",
+        "project_path": ".agents/skills",
+    },
+    {
         "id": "opencode",
         "name": "OpenCode",
         "user_path": "~/.config/opencode/skills",
