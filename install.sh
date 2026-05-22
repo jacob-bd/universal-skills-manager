@@ -100,8 +100,8 @@ Options:
   --help, -h        Show this help message
   --tools LIST      Comma-separated list of tools to install to
                     (skips auto-detection)
-                    Valid: claude,gemini,antigravity,opencode,openclaw,
-                           alef-agent,codex,goose,roo,cursor,cline,hermes
+                     Valid: claude,gemini,antigravity,antigravity-cli,opencode,openclaw,
+                            alef-agent,codex,goose,roo,cursor,cline,hermes
                     (gemini and codex both install to ~/.agents/skills/)
 
 Examples:
@@ -167,7 +167,8 @@ detect_tools() {
 
     check_tool "Claude Code"        "$HOME/.claude"             "$HOME/.claude/skills"
     check_tool_gemini_codex
-    check_tool "Anti-Gravity"       "$HOME/.gemini/antigravity" "$HOME/.gemini/antigravity/skills"
+    check_tool "Antigravity"        "$HOME/.gemini/antigravity"      "$HOME/.gemini/antigravity/skills"
+    check_tool "Antigravity CLI"    "$HOME/.gemini/antigravity-cli"  "$HOME/.gemini/antigravity-cli/skills"
     check_tool "OpenCode"           "$HOME/.config/opencode"    "$HOME/.config/opencode/skills"
     check_tool "OpenClaw"           "$HOME/.openclaw"           "$HOME/.openclaw/workspace/skills"
     check_tool "Alef Agent"         "$HOME/.alef-agent"         "$HOME/.alef-agent/workspace/skills"
@@ -249,7 +250,8 @@ filter_tools() {
         case "$short_name" in
             claude)       match="Claude Code" ;;
             gemini)       match="Gemini CLI / Codex" ;;
-            antigravity)  match="Anti-Gravity" ;;
+            antigravity)     match="Antigravity" ;;
+            antigravity-cli) match="Antigravity CLI" ;;
             opencode)     match="OpenCode" ;;
             openclaw)     match="OpenClaw" ;;
             alef-agent)   match="Alef Agent" ;;

@@ -1,6 +1,6 @@
 ---
 name: universal-skills-manager
-description: "The master coordinator for AI skills. Discovers skills from multiple sources (SkillsMP.com, SkillHub, and ClawHub), manages installation, and synchronization across Claude Code, Gemini CLI, Google Anti-Gravity, OpenCode, and other AI tools. Handles User-level (Global) and Project-level (Local) scopes."
+description: "The master coordinator for AI skills. Discovers skills from multiple sources (SkillsMP.com, SkillHub, and ClawHub), manages installation, and synchronization across Claude Code, Gemini CLI, Google Antigravity, OpenCode, and other AI tools. Handles User-level (Global) and Project-level (Local) scopes."
 compatibility: "Requires python3, curl, and network access to skillsmp.com, skills.palebluedot.live, clawhub.ai, and github.com"
 metadata:
   homepage: https://github.com/jacob-bd/universal-skills-manager
@@ -13,7 +13,7 @@ metadata:
 
 # Universal Skills Manager
 
-This skill empowers the agent to act as a centralized skill manager for AI capabilities. It discovers skills from multiple sources — SkillsMP.com (curated, AI semantic search), SkillHub (community skills, no API key required), and ClawHub (versioned skills, semantic search, no API key required) — and unifies skill management across multiple AI tools (Claude Code, Gemini, Anti-Gravity, OpenCode, Cline, Cursor, etc.), ensuring consistency and synchronization.
+This skill empowers the agent to act as a centralized skill manager for AI capabilities. It discovers skills from multiple sources — SkillsMP.com (curated, AI semantic search), SkillHub (community skills, no API key required), and ClawHub (versioned skills, semantic search, no API key required) — and unifies skill management across multiple AI tools (Claude Code, Gemini, Antigravity, OpenCode, Cline, Cursor, etc.), ensuring consistency and synchronization.
 
 ## When to Use This Skill
 
@@ -22,7 +22,7 @@ Activate this skill when the user:
 - Wants to **install** a skill (from a search result or local file).
 - Wants to **sync** skills between different AI tools (e.g., "Copy this Gemini skill to OpenCode").
 - Asks to **move or copy** skills between scopes (User vs. Project).
-- Mentions "Google Anti-Gravity", "OpenCode", or "Gemini" in the context of skills/extensions.
+- Mentions "Google Antigravity", "OpenCode", or "Gemini" in the context of skills/extensions.
 - Wants to **package a skill for claude.ai, Claude Desktop, or ChatGPT** (ZIP upload).
 
 ## Supported Ecosystem
@@ -32,8 +32,8 @@ This skill manages the following tools and scopes. Always verify these paths exi
 | Tool | User Scope (Global) | Project Scope (Local) |
 | :--- | :--- | :--- |
 | **Gemini CLI / Codex** | `~/.agents/skills/` | `./.agents/skills/` |
-| **Google Anti-Gravity** | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
-| **Google Anti-Gravity CLI** | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
+| **Google Antigravity** | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
+| **Google Antigravity CLI** | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
 | **OpenCode** | `~/.config/opencode/skills/` | `./.opencode/skills/` |
 | **OpenClaw** | `~/.openclaw/workspace/skills/` | `./.openclaw/skills/` |
 | **Alef Agent** | `~/.alef-agent/workspace/skills/` | N/A (daemon, no project scope) |
@@ -502,7 +502,7 @@ This skill (Universal Skills Manager) requires network access to call the Skills
 6.  **Cross-Platform Adaptation:**
     *   Gemini uses `SKILL.md`.
     *   Cline uses the same `SKILL.md` format with `name` and `description` frontmatter. The `name` field must match the directory name. No manifest generation required. Note: Cline also reads `.claude/skills/` at the project level, so Claude Code project skills work in Cline automatically.
-    *   If OpenCode or Anti-Gravity require a specific manifest (e.g., `manifest.json`), generate a basic one based on the `SKILL.md` frontmatter during installation.
+    *   If OpenCode or Antigravity require a specific manifest (e.g., `manifest.json`), generate a basic one based on the `SKILL.md` frontmatter during installation.
 7.  **Cloud Platform Frontmatter Compatibility Check (claude.ai / Claude Desktop / ChatGPT):**
     When a user wants to upload or package a skill for **claude.ai**, **Claude Desktop**, or **ChatGPT**, validate the SKILL.md frontmatter against the [Agent Skills specification](https://agentskills.io/specification). All three platforms use strict frontmatter validation that rejects ambiguous YAML constructs like block scalars. Non-compliant skills will be rejected with "malformed YAML frontmatter" or "unexpected key" errors.
 

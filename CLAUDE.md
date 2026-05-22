@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This repository contains the **Universal Skills Manager** skill, which acts as a centralized skill manager for AI capabilities across multiple AI coding tools (Gemini CLI, Google Anti-Gravity, OpenCode, Claude Code, Cline, Cursor, etc.).
+This repository contains the **Universal Skills Manager** skill, which acts as a centralized skill manager for AI capabilities across multiple AI coding tools (Gemini CLI, Google Antigravity, OpenCode, Claude Code, Cline, Cursor, etc.).
 
 The skill enables:
 - **Discovery**: Searching for skills from multiple sources — SkillsMP.com (curated, AI semantic search), SkillHub (community skills, no API key required), and ClawHub (versioned skills, semantic search, no API key required)
@@ -57,8 +57,8 @@ The skill manages skills across these AI tools and their respective paths:
 | Tool | User Scope (Global) | Project Scope (Local) |
 |------|---------------------|----------------------|
 | Gemini CLI / Codex | `~/.agents/skills/` | `./.agents/skills/` |
-| Google Anti-Gravity | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
-| Google Anti-Gravity CLI | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
+| Google Antigravity | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
+| Google Antigravity CLI | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
 | OpenCode | `~/.config/opencode/skills/` | `./.opencode/skills/` |
 | OpenClaw | `~/.openclaw/workspace/skills/` | `./.openclaw/skills/` |
 | Alef Agent | `~/.alef-agent/workspace/skills/` | N/A (daemon, no project scope) |
@@ -287,7 +287,7 @@ For example, installing "code-debugging" creates:
 - **Update Comparison**: When updating an existing skill, the script compares files and shows a diff before overwriting, prompting for confirmation.
 - **No overwriting without confirmation**: Always ask before overwriting existing skills unless "--force" is explicitly used
 - **Structure integrity**: Never dump loose files into the root skills directory; always create a dedicated folder per skill
-- **Cross-platform compatibility**: Some tools (OpenCode, Anti-Gravity) may require additional manifest files generated from SKILL.md frontmatter
+- **Cross-platform compatibility**: Some tools (OpenCode, Antigravity) may require additional manifest files generated from SKILL.md frontmatter
 - **GitHub content fetching**: Skills from SkillsMP/SkillHub are fetched from GitHub using raw URLs converted from tree URLs. ClawHub skills are fetched directly via ClawHub's `/file` endpoint.
 - **ClawHub install bypass**: ClawHub installs bypass `install_skill.py` (which expects GitHub URLs). Instead, content is fetched via ClawHub's API, saved to a temp directory, scanned with `scan_skill.py` manually, and then copied to the destination.
 - **Cloud platform packaging**: claude.ai, Claude Desktop, and ChatGPT all require ZIP file uploads. All three follow the same [Agent Skills specification](https://agentskills.io/specification) for SKILL.md frontmatter. The `validate_frontmatter.py` script validates compatibility for all three platforms. ChatGPT Skills are in beta (Business/Enterprise/Edu/Teachers/Healthcare plans).

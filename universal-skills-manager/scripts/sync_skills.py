@@ -49,14 +49,14 @@ TOOLS = [
         "project_path": ".agents/skills",
     },
     {
-        "id": "anti-gravity",
-        "name": "Google Anti-Gravity",
+        "id": "antigravity",
+        "name": "Google Antigravity",
         "user_path": "~/.gemini/antigravity/skills",
         "project_path": ".antigravity/extensions",
     },
     {
-        "id": "anti-gravity-cli",
-        "name": "Google Anti-Gravity CLI",
+        "id": "antigravity-cli",
+        "name": "Google Antigravity CLI",
         "user_path": "~/.gemini/antigravity-cli/skills",
         "project_path": ".agents/skills",
     },
