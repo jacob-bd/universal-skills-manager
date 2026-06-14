@@ -223,4 +223,4 @@ MIT License - See repository for details
 
 Special thanks to [@ben-alkov](https://github.com/ben-alkov) for the comprehensive security analysis and hardening of `scan_skill.py` (PR #2).
 
-Security scanning capabilities were significantly expanded based on the threat taxonomy and research from [NVIDIA/SkillSpector](https://github.com/NVIDIA/SkillSpector).
+Starting in **v1.14.0**, security scanning capabilities were significantly expanded based on the threat taxonomy and research from [NVIDIA/SkillSpector](https://github.com/NVIDIA/SkillSpector).
