@@ -29,9 +29,9 @@ If you discover a security vulnerability in the Universal Skills Manager, please
 
 ## Security Architecture
 
-### Security Scanner (`scan_skill.py` v1.2.0)
+### Security Scanner (`scan_skill.py` v1.3.0)
 
-The scanner runs automatically during skill installation and checks for 20+ threat categories:
+The scanner runs automatically during skill installation and checks for 30+ threat categories:
 
 **Critical detections:**
 - Symlink traversal and path escape attempts
@@ -51,6 +51,13 @@ The scanner runs automatically during skill installation and checks for 20+ thre
 - Homoglyph characters (Cyrillic look-alikes that bypass text matching)
 - Data URIs, JavaScript URIs, and protocol-relative URLs
 - Oversized files (>10MB) that may cause resource exhaustion
+- Supply Chain risks (unpinned dependencies, remote execution via pip, obfuscation, typosquatting)
+- Excessive Agency (unrestricted tools, autonomous high-impact actions, unbounded resources)
+- Output Handling (unvalidated outputs to SQL/shell, cross-context leakage)
+- Memory Poisoning (unvalidated persistence, context stuffing)
+- Rogue Agent behavior (self-modification, persistence mechanisms like cron)
+- Privilege Escalation (sudo/root command usage)
+- Tool Misuse (dangerous parameters like shell=True, --force)
 
 **Info detections:**
 - Base64/hex/URL-encoded content that may hide payloads
@@ -58,6 +65,8 @@ The scanner runs automatically during skill installation and checks for 20+ thre
 - Cross-skill escalation attempts
 - Binary or non-UTF-8 files
 - Unreadable files (permission denied)
+- System Prompt Leakage (attempting to print or expose internal instructions)
+- Trigger Abuse (overly broad trigger patterns)
 
 **Scanner defenses:**
 - Symlink protection: triple-layer (`followlinks=False`, `is_symlink()`, `resolve().relative_to()`)
@@ -68,7 +77,7 @@ The scanner runs automatically during skill installation and checks for 20+ thre
 - Continuation line joining for multi-line payload detection
 - Finding deduplication to prevent report inflation
 
-### Installer (`install_skill.py` v1.2.0)
+### Installer (`install_skill.py` v1.3.0)
 
 - Atomic installation pattern (temp dir, validate, move)
 - Path traversal protection (`sanitize_filename`, `verify_path_containment`)

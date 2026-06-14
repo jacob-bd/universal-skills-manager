@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0] - 2026-06-14
+
+### Added
+- **Expanded Security Scanner**: Added 9 new threat categories (SC, EA, OH, MP, RA, PE, SPL, TM, TR) mapping to 30+ total patterns, bringing USM's security detection completely in line with the latest research.
+  - Supply Chain risks (unpinned dependencies, remote execution via pip, obfuscation, typosquatting)
+  - Excessive Agency (unrestricted tools, autonomous high-impact actions, unbounded resources)
+  - Output Handling (unvalidated outputs to SQL/shell, cross-context leakage)
+  - Memory Poisoning (unvalidated persistence, context stuffing)
+  - Rogue Agent behavior (self-modification, persistence mechanisms like cron)
+  - Privilege Escalation (sudo/root command usage)
+  - Tool Misuse (dangerous parameters like shell=True, --force)
+  - System Prompt Leakage & Trigger Abuse
+- **Tests**: 6 new pytest cases explicitly validating these new features.
+
+### Acknowledgments
+- Security scanner patterns significantly expanded based on the threat taxonomy and research from [NVIDIA/SkillSpector](https://github.com/NVIDIA/SkillSpector).
+
 ## [1.13.1] - 2026-05-22
 
 ### Added

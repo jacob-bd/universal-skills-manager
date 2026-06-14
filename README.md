@@ -17,7 +17,7 @@
 
 ---
 
-**v1.13.1** · Three-source skill discovery · 12 supported AI tools · Cross-tool sync status reporter · ChatGPT cloud upload · Hardened security scanning
+**v1.14.0** · Three-source skill discovery · 12 supported AI tools · Cross-tool sync status reporter · ChatGPT cloud upload · Hardened security scanning
 
 A centralized skill manager for AI coding assistants. Discovers, installs, and synchronizes skills from multiple sources — [SkillsMP.com](https://skillsmp.com) (curated, AI semantic search), [SkillHub](https://skills.palebluedot.live) (community skills, no API key required), and [ClawHub](https://clawhub.ai) (versioned skills, semantic search, no API key required) — across multiple AI tools including Claude Code, OpenAI Codex, Gemini CLI, and more.
 
@@ -57,7 +57,7 @@ This video covers:
 
 - 🔍 **Multi-Source Search**: Find skills from SkillsMP (curated, AI semantic search), SkillHub (community catalog), and ClawHub (versioned skills, semantic search) — no API key needed for SkillHub or ClawHub
 - 📦 **One-Click Install**: Download and validate skills with atomic installation (temp → validate → install)
-- 🛡️ **Security Scanning**: 20+ detection categories across 3 severity levels at install time ([details](docs/TECHNICAL.md#security-scanning))
+- 🛡️ **Security Scanning**: 30+ detection categories across 3 severity levels at install time ([details](docs/TECHNICAL.md#security-scanning))
 - 🔄 **Cross-Tool Sync**: Detect out-of-sync skills across tools, see which copy is newest, and sync with explicit approval — powered by `sync_skills.py` (read-only status reporter) plus agent-driven copy operations
 - 📊 **Skill Matrix Report**: See which skills are installed on which tools at a glance
 - ⚡ **One-Liner Installer**: `curl | sh` auto-detects your tools and installs everywhere, with `--tools` flag for targeting specific tools
@@ -196,7 +196,7 @@ universal-skills-manager/
     ├── config.json                  # API key config template
     └── scripts/
         ├── install_skill.py         # Helper script for downloading skills
-        ├── scan_skill.py            # Security scanner (20+ detection categories)
+        ├── scan_skill.py            # Security scanner (30+ detection categories)
         ├── sync_skills.py           # Read-only sync status reporter across AI tools
         └── validate_frontmatter.py  # Cloud platform YAML frontmatter validator
 ```
@@ -224,3 +224,5 @@ MIT License - See repository for details
 This skill was inspired by the [skill-lookup](https://skillsmp.com/skills/f-prompts-chat-plugins-claude-prompts-chat-skills-skill-lookup-skill-md) skill by f-prompts.
 
 Special thanks to [@ben-alkov](https://github.com/ben-alkov) for the comprehensive security analysis and hardening of `scan_skill.py` (PR #2).
+
+Security scanning capabilities were significantly expanded based on the threat taxonomy and research from [NVIDIA/SkillSpector](https://github.com/NVIDIA/SkillSpector).

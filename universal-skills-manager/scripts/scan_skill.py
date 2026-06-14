@@ -39,7 +39,7 @@ if sys.platform == "win32" and not os.environ.get("PYTHONIOENCODING"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 
 MAX_FILE_SIZE = 10_000_000  # 10 MB
 MAX_FILE_COUNT = 1000
@@ -345,6 +345,79 @@ class Finding:
         }
 
 
+_SUPPLY_CHAIN_PATTERNS = [
+    (re.compile(r'^(?!#).*?==\s*(latest|master|main|head|\*|\s*$)', re.MULTILINE | re.IGNORECASE),
+     "Unpinned dependency version (latest/master/*) — supply chain risk (SC1)"),
+    (re.compile(r'^(?!#).*?>=\s*(latest|master|main|head|\*|\s*$)', re.MULTILINE | re.IGNORECASE),
+     "Unpinned dependency version (>=latest) — supply chain risk (SC1)"),
+    (re.compile(r'pip\s+install\s+(https?://|git\+|git@)', re.IGNORECASE),
+     "Remote code installation via pip (URL/git) — supply chain risk (SC2)"),
+    (re.compile(r'pip3\s+install\s+(https?://|git\+|git@)', re.IGNORECASE),
+     "Remote code installation via pip3 (URL/git) — supply chain risk (SC2)"),
+    (re.compile(r'eval\s*\(\s*base64', re.IGNORECASE),
+     "Obfuscated execution via eval(base64...) — supply chain / code injection risk (SC3)"),
+    (re.compile(r'exec\s*\(\s*urllib|exec\s*\(\s*requests', re.IGNORECASE),
+     "Obfuscated remote code execution via exec(urllib/requests) — supply chain risk (SC3)"),
+    (re.compile(r'\b(?:reqests|reqeusts|requets|numby|pandass|tenosrflow|torchh|sklearnn)\b', re.IGNORECASE),
+     "Potential typosquatting package name — supply chain risk (SC6)"),
+]
+
+_EXCESSIVE_AGENCY_PATTERNS = [
+    (re.compile(r'(tool|function|capability)\s*(access|list|set)\s*[:=]\s*["\']?(all|any|\*|unrestricted|full)', re.IGNORECASE),
+     "Unrestricted tool access granted — excessive agency risk (EA1)"),
+    (re.compile(r'(auto|automatic|autonomous)\s*(execute|run|approve|confirm|delete|modify|send)', re.IGNORECASE),
+     "Autonomous high-impact action without human confirmation — excessive agency risk (EA2)"),
+    (re.compile(r'(can|able\s+to|will|should)\s*(do|perform|execute|access|modify|delete|send|create)\s*(anything|any|all|everything|arbitrary)', re.IGNORECASE),
+     "Scope creep — skill claims ability to do anything — excessive agency risk (EA3)"),
+    (re.compile(r'(no|without|ignore)\s*(limit|quota|rate|timeout|cap|bound|restrict)', re.IGNORECASE),
+     "Unbounded resource consumption risk — excessive agency risk (EA4)"),
+]
+
+_OUTPUT_HANDLING_PATTERNS = [
+    (re.compile(r'(sql|query|execute|shell|bash|html|render)\s*\+\s*(output|result|response|text)', re.IGNORECASE),
+     "Unvalidated model output used in SQL/shell/HTML — output handling risk (OH1)"),
+    (re.compile(r'(pass|send|write|log)\s*(output|result|response)\s*(to|into)\s*(another|different|external|cross)', re.IGNORECASE),
+     "Cross-context output flow without validation — output handling risk (OH2)"),
+    (re.compile(r'(max|limit|bound|cap)\s*(token|output|length|size|rate)\s*[:=]\s*(none|unlimited|infinite|\*|0)', re.IGNORECASE),
+     "Unbounded output generation risk — output handling risk (OH3)"),
+]
+
+_MEMORY_POISONING_PATTERNS = [
+    (re.compile(r'(store|save|persist|remember|memory)\s*(input|content|text|data)\s*(without|skip|no)\s*(valid|check|filter|sanitize)', re.IGNORECASE),
+     "Untrusted input persisted without validation — memory poisoning risk (MP1)"),
+    (re.compile(r'(context|prompt|window)\s*(stuff|pad|fill|overflow|inject)', re.IGNORECASE),
+     "Context stuffing/padding attack pattern — memory poisoning risk (MP2)"),
+    (re.compile(r'(memory|state|context)\s*(isolate|separate|boundary|partition)\s*[:=]\s*(false|off|none|disabled)', re.IGNORECASE),
+     "Memory isolation disabled — memory poisoning risk (MP3)"),
+]
+
+_ROGUE_AGENT_PATTERNS = [
+    (re.compile(r'(modify|edit|overwrite|replace)\s*(self|own|this)\s*(code|skill|file|config|SKILL\.md)', re.IGNORECASE),
+     "Self-modification of skill files — rogue agent risk (RA1)"),
+    (re.compile(r'(cron|crontab|startup|rc\.local|systemd|launchd|persist|schedule)\s*(job|script|task|entry)', re.IGNORECASE),
+     "Persistence mechanism detected — rogue agent risk (RA2)"),
+]
+
+_PRIVILEGE_ESCALATION_PATTERNS = [
+    (re.compile(r'(sudo|root|admin|elevat|privilege)\s*(run|exec|command|access)', re.IGNORECASE),
+     "Elevated privilege command detected — privilege escalation risk (PE2)"),
+]
+
+_SYSTEM_PROMPT_LEAKAGE_PATTERNS = [
+    (re.compile(r'(print|output|reveal|expose|show|dump)\s*(system|prompt|instruction|rule|guideline)', re.IGNORECASE),
+     "System prompt leakage attempt — system prompt leakage risk (P6)"),
+]
+
+_TOOL_MISUSE_PATTERNS = [
+    (re.compile(r'(shell\s*=\s*True|shell=True|--force|-rf\s*/)', re.IGNORECASE),
+     "Dangerous tool parameter detected — tool misuse risk (TM1)"),
+]
+
+_TRIGGER_ABUSE_PATTERNS = [
+    (re.compile(r'(trigger|activate|keyword|pattern)\s*[:=]\s*["\']?(any|all|\*|\.|\w{1,2})["\']?', re.IGNORECASE),
+     "Overly broad trigger pattern — trigger abuse risk (TR1)"),
+]
+
 class SkillScanner:
     """Scans skill directories and files for security issues."""
 
@@ -500,6 +573,15 @@ class SkillScanner:
             self._check_exfiltration_urls(lines, relative)
             self._check_credential_references(lines, relative)
             self._check_hardcoded_secrets(lines, relative)
+            self._check_supply_chain(lines, relative)
+            self._check_excessive_agency(lines, relative)
+            self._check_output_handling(lines, relative)
+            self._check_memory_poisoning(lines, relative)
+            self._check_rogue_agent(lines, relative)
+            self._check_privilege_escalation(lines, relative)
+            self._check_system_prompt_leakage(lines, relative)
+            self._check_tool_misuse(lines, relative)
+            self._check_trigger_abuse(lines, relative)
             self._check_homoglyphs(lines, relative)
             self._check_command_execution(lines, relative)
             self._check_shell_pipe_execution(lines, relative)
@@ -510,6 +592,15 @@ class SkillScanner:
             self._check_exfiltration_urls(lines, relative)
             self._check_credential_references(lines, relative)
             self._check_hardcoded_secrets(lines, relative)
+            self._check_supply_chain(lines, relative)
+            self._check_excessive_agency(lines, relative)
+            self._check_output_handling(lines, relative)
+            self._check_memory_poisoning(lines, relative)
+            self._check_rogue_agent(lines, relative)
+            self._check_privilege_escalation(lines, relative)
+            self._check_system_prompt_leakage(lines, relative)
+            self._check_tool_misuse(lines, relative)
+            self._check_trigger_abuse(lines, relative)
             self._check_encoded_content(lines, relative)
 
         # Multi-line detection pass on joined continuation lines
@@ -526,6 +617,15 @@ class SkillScanner:
         self._check_shell_pipe_execution(lines, file)
         self._check_credential_references(lines, file)
         self._check_hardcoded_secrets(lines, file)
+        self._check_supply_chain(lines, file)
+        self._check_excessive_agency(lines, file)
+        self._check_output_handling(lines, file)
+        self._check_memory_poisoning(lines, file)
+        self._check_rogue_agent(lines, file)
+        self._check_privilege_escalation(lines, file)
+        self._check_system_prompt_leakage(lines, file)
+        self._check_tool_misuse(lines, file)
+        self._check_trigger_abuse(lines, file)
         self._check_homoglyphs(lines, file)
         self._check_external_url_references(lines, file)
         self._check_command_execution(lines, file)
@@ -617,6 +717,78 @@ class SkillScanner:
                     matched_text=line.strip()[:120],
                     recommendation="Replace look-alike characters with their ASCII equivalents. Homoglyphs can bypass text-based security checks.",
                 )
+
+    def _check_supply_chain(self, lines, file):
+        """Check for supply chain risks."""
+        for line_num, line in enumerate(lines, start=1):
+            for regex, description in _SUPPLY_CHAIN_PATTERNS:
+                if regex.search(line):
+                    self._add_finding("warning", "supply_chain", file, line_num, description, line.strip()[:100], "Pin dependency versions, avoid remote code execution, verify package names.")
+                    break
+
+    def _check_excessive_agency(self, lines, file):
+        """Check for excessive agency risks."""
+        for line_num, line in enumerate(lines, start=1):
+            for regex, description in _EXCESSIVE_AGENCY_PATTERNS:
+                if regex.search(line):
+                    self._add_finding("warning", "excessive_agency", file, line_num, description, line.strip()[:100], "Restrict tool access, require human confirmation for destructive actions.")
+                    break
+
+    def _check_output_handling(self, lines, file):
+        """Check for output handling risks."""
+        for line_num, line in enumerate(lines, start=1):
+            for regex, description in _OUTPUT_HANDLING_PATTERNS:
+                if regex.search(line):
+                    self._add_finding("warning", "output_handling", file, line_num, description, line.strip()[:100], "Validate and sanitize all model output before use in downstream contexts.")
+                    break
+
+    def _check_memory_poisoning(self, lines, file):
+        """Check for memory poisoning risks."""
+        for line_num, line in enumerate(lines, start=1):
+            for regex, description in _MEMORY_POISONING_PATTERNS:
+                if regex.search(line):
+                    self._add_finding("warning", "memory_poisoning", file, line_num, description, line.strip()[:100], "Validate all input before persisting; enable memory isolation.")
+                    break
+
+    def _check_rogue_agent(self, lines, file):
+        """Check for rogue agent risks."""
+        for line_num, line in enumerate(lines, start=1):
+            for regex, description in _ROGUE_AGENT_PATTERNS:
+                if regex.search(line):
+                    self._add_finding("warning", "rogue_agent", file, line_num, description, line.strip()[:100], "Treat skill files as read-only; remove persistence mechanisms.")
+                    break
+
+    def _check_privilege_escalation(self, lines, file):
+        """Check for privilege escalation risks."""
+        for line_num, line in enumerate(lines, start=1):
+            for regex, description in _PRIVILEGE_ESCALATION_PATTERNS:
+                if regex.search(line):
+                    self._add_finding("warning", "privilege_escalation", file, line_num, description, line.strip()[:100], "Avoid sudo/root; document any elevated access.")
+                    break
+
+    def _check_system_prompt_leakage(self, lines, file):
+        """Check for system prompt leakage risks."""
+        for line_num, line in enumerate(lines, start=1):
+            for regex, description in _SYSTEM_PROMPT_LEAKAGE_PATTERNS:
+                if regex.search(line):
+                    self._add_finding("info", "system_prompt_leakage", file, line_num, description, line.strip()[:100], "Never expose system prompts or internal instructions.")
+                    break
+
+    def _check_tool_misuse(self, lines, file):
+        """Check for tool misuse risks."""
+        for line_num, line in enumerate(lines, start=1):
+            for regex, description in _TOOL_MISUSE_PATTERNS:
+                if regex.search(line):
+                    self._add_finding("warning", "tool_misuse", file, line_num, description, line.strip()[:100], "Validate tool parameters; reject dangerous values (shell=True, --force).")
+                    break
+
+    def _check_trigger_abuse(self, lines, file):
+        """Check for trigger abuse risks."""
+        for line_num, line in enumerate(lines, start=1):
+            for regex, description in _TRIGGER_ABUSE_PATTERNS:
+                if regex.search(line):
+                    self._add_finding("info", "trigger_abuse", file, line_num, description, line.strip()[:100], "Use specific, narrow trigger patterns.")
+                    break
 
     def _check_exfiltration_urls(self, lines, file):
         """Check for URLs that may exfiltrate data to external servers."""

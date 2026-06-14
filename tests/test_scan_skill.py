@@ -434,3 +434,47 @@ def test_homoglyph_safety_bypass_detected(scanner, tmp_skill):
     assert "safety_bypass" in categories, (
         "Homoglyph-obfuscated safety bypass was not detected after transliteration"
     )
+# --- New tests for Phases 1-5 + Tier 2 ---
+
+def test_supply_chain_unpinned_deps(scanner, tmp_skill):
+    tmp_skill.add_file("SKILL.md", "requests == latest")
+    report = scanner.scan_path(tmp_skill.base)
+    finding = next((f for f in report["findings"] if f["category"] == "supply_chain"), None)
+    assert finding is not None
+    assert "Unpinned dependency" in finding["description"]
+
+def test_excessive_agency_unrestricted_tool(scanner, tmp_skill):
+    tmp_skill.add_file("SKILL.md", 'tool access = "all"')
+    report = scanner.scan_path(tmp_skill.base)
+    finding = next((f for f in report["findings"] if f["category"] == "excessive_agency"), None)
+    assert finding is not None
+    assert "Unrestricted tool access" in finding["description"]
+
+def test_output_handling_sql_injection(scanner, tmp_skill):
+    tmp_skill.add_file("SKILL.md", 'execute sql + output')
+    report = scanner.scan_path(tmp_skill.base)
+    finding = next((f for f in report["findings"] if f["category"] == "output_handling"), None)
+    assert finding is not None
+    assert "Unvalidated model output used in SQL" in finding["description"]
+
+def test_rogue_agent_persistence(scanner, tmp_skill):
+    tmp_skill.add_file("script.sh", 'crontab job')
+    report = scanner.scan_path(tmp_skill.base)
+    finding = next((f for f in report["findings"] if f["category"] == "rogue_agent"), None)
+    assert finding is not None
+    assert "Persistence mechanism detected" in finding["description"]
+
+def test_privilege_escalation_sudo(scanner, tmp_skill):
+    tmp_skill.add_file("script.sh", 'sudo run')
+    report = scanner.scan_path(tmp_skill.base)
+    finding = next((f for f in report["findings"] if f["category"] == "privilege_escalation"), None)
+    assert finding is not None
+    assert "Elevated privilege command" in finding["description"]
+
+def test_system_prompt_leakage(scanner, tmp_skill):
+    tmp_skill.add_file("SKILL.md", 'print system prompt')
+    report = scanner.scan_path(tmp_skill.base)
+    finding = next((f for f in report["findings"] if f["category"] == "system_prompt_leakage"), None)
+    assert finding is not None
+    assert finding["severity"] == "info"
+    assert "System prompt leakage" in finding["description"]

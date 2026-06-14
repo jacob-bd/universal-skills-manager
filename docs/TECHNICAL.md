@@ -16,7 +16,7 @@ Detailed technical documentation for the Universal Skills Manager. For a quick o
 
 ## Security Scanning
 
-Skills are automatically scanned for security threats at install time. The scanner (`scan_skill.py`) checks 20+ threat categories:
+Skills are automatically scanned for security threats at install time. The scanner (`scan_skill.py`) checks 30+ threat categories:
 
 **Critical:**
 - Symlink traversal and path escape attempts
@@ -32,11 +32,20 @@ Skills are automatically scanned for security threats at install time. The scann
 - Prompt injection (instruction overrides, role hijacking, safety bypasses)
 - Homoglyph characters (Cyrillic look-alikes that bypass text-based checks)
 - Data URIs, JavaScript URIs, and protocol-relative URLs
+- Supply Chain risks (unpinned deps, remote execution via pip, obfuscation, typosquatting)
+- Excessive Agency (unrestricted tools, autonomous high-impact actions, unbounded resources)
+- Output Handling (unvalidated outputs to SQL/shell, cross-context leakage)
+- Memory Poisoning (unvalidated persistence, context stuffing)
+- Rogue Agent behavior (self-modification, persistence mechanisms like cron)
+- Privilege Escalation (sudo/root command usage)
+- Tool Misuse (dangerous parameters like shell=True, --force)
 
 **Info:**
 - Encoded content (base64, hex, URL-encoded payloads)
 - LLM delimiter tokens, cross-skill escalation attempts
 - Binary files and unreadable files
+- System Prompt Leakage (attempting to print or expose internal instructions)
+- Trigger Abuse (overly broad trigger patterns)
 
 **Scanner defenses:** Triple-layer symlink protection, fd-based TOCTOU mitigation, 10MB file size limit, ANSI escape stripping, Unicode NFC normalization, continuation line joining for multi-line payloads.
 
