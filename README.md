@@ -221,8 +221,6 @@ MIT License - See repository for details
 
 ## Acknowledgments
 
-This skill was inspired by the [skill-lookup](https://skillsmp.com/skills/f-prompts-chat-plugins-claude-prompts-chat-skills-skill-lookup-skill-md) skill by f-prompts.
-
 Special thanks to [@ben-alkov](https://github.com/ben-alkov) for the comprehensive security analysis and hardening of `scan_skill.py` (PR #2).
 
 Security scanning capabilities were significantly expanded based on the threat taxonomy and research from [NVIDIA/SkillSpector](https://github.com/NVIDIA/SkillSpector).
