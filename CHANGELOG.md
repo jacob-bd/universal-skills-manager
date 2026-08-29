@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Sync status no longer counts non-payload files.** `sync_skills.py` hashed every file under a skill directory, including `.git/` internals and macOS `.DS_Store`. Three consequences, all now fixed:
+  - A skill kept as a git checkout could **never** report in sync with a deployed copy, since the deployment has no `.git` tree to hash. This was structural, not fixable by re-syncing.
+  - A single `.DS_Store` reported a false `CONFLICT: N distinct versions` on skills whose `SKILL.md` was byte-identical everywhere.
+  - `latest_mtime()` had the same blind spot, so a `git fetch` touching `.git/FETCH_HEAD` could mark a copy as "newest" without a byte of skill content changing. Since "newest" is the copy users are told to sync **from**, this could point a sync in the wrong direction.
+- Added `is_payload_file()` plus `IGNORED_NAMES` / `IGNORED_DIRS`, shared by `directory_file_hashes()` and `latest_mtime()` so hashing and recency agree on what counts as skill content. Ignored: `.DS_Store`, `Thumbs.db`, `.gitignore`, `.gitattributes`, and the `.git/`, `__pycache__/`, `.pytest_cache/`, `node_modules/`, `.claude/` directories.
+- `sync_skills.py` version bumped to 1.3.1.
+
+### Added
+- **Tests**: 5 new cases covering the ignore behaviour, including one asserting that a real payload difference is still detected so the ignore list cannot mask genuine drift.
+
 ## [1.14.0] - 2026-06-14
 
 ### Added

@@ -30,7 +30,7 @@ if sys.platform == "win32" and not os.environ.get("PYTHONIOENCODING"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
-VERSION = "1.3.0"
+VERSION = "1.3.1"
 
 # ============================================================================
 # Tool Registry
@@ -132,18 +132,38 @@ def file_hash(file_path: Path) -> str:
     return hasher.hexdigest()
 
 
+# Files that are not part of a skill's payload and must never affect sync status.
+#
+# Without this, any skill kept as a git checkout (the canonical copies usually are)
+# hashes its entire .git directory and can therefore never match a deployed copy,
+# and a single macOS .DS_Store reports a false conflict on skills whose SKILL.md is
+# byte-identical. Observed 2026-08-29 on my-voice: identical SKILL.md in all six
+# locations, reported as "CONFLICT: 3 distinct versions".
+IGNORED_NAMES = {'.DS_Store', 'Thumbs.db', '.gitignore', '.gitattributes'}
+IGNORED_DIRS = {'.git', '__pycache__', '.pytest_cache', 'node_modules', '.claude'}
+
+
+def is_payload_file(rel_path: Path) -> bool:
+    """True if this path counts as skill content for sync comparison."""
+    if rel_path.name in IGNORED_NAMES:
+        return False
+    return not any(part in IGNORED_DIRS for part in rel_path.parts)
+
+
 def directory_file_hashes(directory: Path) -> dict[str, str]:
     """
     Return a map of {relative_path: md5_hash} for all files in directory.
 
-    Symlinks and unreadable files are silently skipped.
+    Symlinks, unreadable files, and non-payload files (see IGNORED_*) are skipped.
     """
     result = {}
     for file_path in sorted(directory.rglob('*')):
         if file_path.is_file() and not file_path.is_symlink():
-            rel = str(file_path.relative_to(directory))
+            rel_path = file_path.relative_to(directory)
+            if not is_payload_file(rel_path):
+                continue
             try:
-                result[rel] = file_hash(file_path)
+                result[str(rel_path)] = file_hash(file_path)
             except OSError:
                 continue
     return result
@@ -258,10 +278,17 @@ def detect_tools(
 # ============================================================================
 
 def latest_mtime(directory: Path) -> Optional[float]:
-    """Return the most recent mtime across all files in directory."""
+    """Return the most recent mtime across a skill's payload files.
+
+    Ignores the same non-payload files as directory_file_hashes: a `git fetch`
+    touching .git, or Finder writing a .DS_Store, must not make a skill look
+    newer than the copy that actually received an edit.
+    """
     newest = None
     for file_path in directory.rglob('*'):
         if file_path.is_file() and not file_path.is_symlink():
+            if not is_payload_file(file_path.relative_to(directory)):
+                continue
             try:
                 mt = file_path.stat().st_mtime
             except OSError:
