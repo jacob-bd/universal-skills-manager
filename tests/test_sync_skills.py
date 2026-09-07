@@ -14,6 +14,7 @@ from sync_skills import (
     directory_file_hashes,
     directory_hash,
     extract_frontmatter,
+    is_payload_file,
     file_hash,
     format_human,
     format_json,
@@ -132,6 +133,84 @@ def test_directory_hash_ignores_symlinks(tmp_path):
     (d / "link.md").symlink_to(d / "SKILL.md")
     h_after = directory_hash(d)
     assert h_before == h_after
+
+
+def test_directory_hash_ignores_ds_store(tmp_path):
+    """A macOS .DS_Store must not make two identical skills look different."""
+    d1 = tmp_path / "s1"
+    d2 = tmp_path / "s2"
+    d1.mkdir()
+    d2.mkdir()
+    (d1 / "SKILL.md").write_text("same", encoding="utf-8")
+    (d2 / "SKILL.md").write_text("same", encoding="utf-8")
+    (d2 / ".DS_Store").write_bytes(b"\x00\x01mac junk")
+    assert directory_hash(d1) == directory_hash(d2)
+
+
+def test_directory_hash_ignores_git_directory(tmp_path):
+    """A skill kept as a git checkout must still match its deployed copy.
+
+    Without this, a canonical copy tracked in git can never report in sync with
+    any deployment, because the deployment has no .git tree to hash.
+    """
+    canonical = tmp_path / "canonical"
+    deployed = tmp_path / "deployed"
+    canonical.mkdir()
+    deployed.mkdir()
+    (canonical / "SKILL.md").write_text("same", encoding="utf-8")
+    (deployed / "SKILL.md").write_text("same", encoding="utf-8")
+    git = canonical / ".git"
+    (git / "refs" / "heads").mkdir(parents=True)
+    (git / "config").write_text("[core]\n", encoding="utf-8")
+    (git / "refs" / "heads" / "main").write_text("abc123\n", encoding="utf-8")
+    assert directory_hash(canonical) == directory_hash(deployed)
+
+
+def test_directory_hash_still_detects_real_content_change(tmp_path):
+    """The ignore list must not mask an actual difference in skill payload."""
+    d1 = tmp_path / "s1"
+    d2 = tmp_path / "s2"
+    d1.mkdir()
+    d2.mkdir()
+    (d1 / "SKILL.md").write_text("same", encoding="utf-8")
+    (d2 / "SKILL.md").write_text("same", encoding="utf-8")
+    (d1 / ".DS_Store").write_bytes(b"junk")
+    (d2 / "data").mkdir()
+    (d2 / "data" / "extra.md").write_text("real payload", encoding="utf-8")
+    assert directory_hash(d1) != directory_hash(d2)
+
+
+def test_is_payload_file_classification():
+    """Payload vs non-payload, including nested ignored directories."""
+    assert is_payload_file(Path("SKILL.md"))
+    assert is_payload_file(Path("data/notes.md"))
+    assert is_payload_file(Path("scripts/run.sh"))
+    assert not is_payload_file(Path(".DS_Store"))
+    assert not is_payload_file(Path(".git/config"))
+    assert not is_payload_file(Path(".git/refs/heads/main"))
+    assert not is_payload_file(Path("__pycache__/mod.pyc"))
+    assert not is_payload_file(Path(".claude/settings.local.json"))
+
+
+def test_latest_mtime_ignores_non_payload_files(tmp_path):
+    """Touching .git must not make a skill look newer than a real edit.
+
+    latest_mtime decides which copy is reported as "newest", and "newest" is the
+    copy users are told to sync FROM. A git fetch touching .git/FETCH_HEAD must
+    not be able to win that comparison.
+    """
+    d = tmp_path / "skill"
+    (d / ".git").mkdir(parents=True)
+    (d / "SKILL.md").write_text("content", encoding="utf-8")
+    payload_mtime = latest_mtime(d)
+
+    fetch_head = d / ".git" / "FETCH_HEAD"
+    fetch_head.write_text("abc123\n", encoding="utf-8")
+    import os
+    future = payload_mtime + 10_000
+    os.utime(fetch_head, (future, future))
+
+    assert latest_mtime(d) == payload_mtime
 
 
 # ============================================================================
