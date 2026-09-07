@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.1] - 2026-09-07
+
 ### Fixed
 - **Sync status no longer counts non-payload files.** `sync_skills.py` hashed every file under a skill directory, including `.git/` internals and macOS `.DS_Store`. Three consequences, all now fixed:
   - A skill kept as a git checkout could **never** report in sync with a deployed copy, since the deployment has no `.git` tree to hash. This was structural, not fixable by re-syncing.
