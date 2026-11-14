@@ -31,7 +31,8 @@ This skill manages the following tools and scopes. Always verify these paths exi
 
 | Tool | User Scope (Global) | Project Scope (Local) |
 | :--- | :--- | :--- |
-| **Gemini CLI / Codex** | `~/.agents/skills/` | `./.agents/skills/` |
+| **Gemini CLI** | `~/.agents/skills/` | `./.agents/skills/` |
+| **OpenAI Codex** | `~/.codex/skills/` | `./.codex/skills/` |
 | **Google Antigravity** | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
 | **Google Antigravity CLI** | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
 | **OpenCode** | `~/.config/opencode/skills/` | `./.opencode/skills/` |
@@ -44,7 +45,7 @@ This skill manages the following tools and scopes. Always verify these paths exi
 | **Cline** | `~/.cline/skills/` | `./.cline/skills/` |
 | **Hermes Agent** | `~/.hermes/skills/` | `./.hermes/skills/` |
 
-*Note: Gemini CLI (v0.30+) and OpenAI Codex both use `~/.agents/skills/` as their skills directory. Gemini CLI also reads `~/.gemini/skills/` but gives `.agents/skills/` higher precedence. To avoid duplicate-skill conflicts, we install to `~/.agents/skills/` only, which serves both tools.*
+*Note: Gemini CLI (v0.30+) reads both `~/.agents/skills/` and `~/.gemini/skills/`, giving `.agents/skills/` higher precedence, so we install there. OpenAI Codex reads `$CODEX_HOME/skills/` (default `~/.codex/skills/`) and does not read `~/.agents/skills/`, so it has its own target.*
 
 **Cloud Platforms (ZIP Upload Required):**
 

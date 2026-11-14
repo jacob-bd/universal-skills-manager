@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.2] - 2026-11-14
+
+### Fixed
+- **Codex skills were installed to a directory Codex never reads.** `sync_skills.py` and `install.sh` merged Gemini CLI and Codex onto `~/.agents/skills/`. Codex reads `$CODEX_HOME/skills/` (default `~/.codex/skills/`) and has no `.agents/skills/` discovery, so every Codex install reported success while Codex saw none of the skills. The registry now has separate `gemini-cli` and `codex` targets, and `install.sh --tools codex` installs to `~/.codex/skills/`.
+- Corrected the tool-path tables in `README.md`, `AGENTS.md`, and `SKILL.md`. Removed a duplicate, mis-capitalized Codex row (`~/.Codex/skills/`).
+- `sync_skills.py` version bumped to 1.3.2.
+
+### Added
+- Regression tests covering Codex/Gemini path separation, Codex not being detected from `~/.agents/skills` alone, and the tool registry.
+
 ## [1.14.1] - 2026-09-07
 
 ### Fixed

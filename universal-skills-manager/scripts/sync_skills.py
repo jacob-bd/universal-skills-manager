@@ -30,23 +30,30 @@ if sys.platform == "win32" and not os.environ.get("PYTHONIOENCODING"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
-VERSION = "1.3.1"
+VERSION = "1.3.2"
 
 # ============================================================================
 # Tool Registry
 #
 # Gemini CLI (v0.30+) reads both ~/.agents/skills/ and ~/.gemini/skills/, with
-# .agents/ taking precedence.  OpenAI Codex also uses ~/.agents/skills/.
-# To avoid duplicate-skill conflicts we register a single entry at
-# ~/.agents/skills/ that serves both tools.
+# .agents/ taking precedence.
+# OpenAI Codex reads $CODEX_HOME/skills (default ~/.codex/skills) — NOT
+# ~/.agents/skills. Registering them separately keeps the two tools from
+# sharing a path Codex never reads.
 # ============================================================================
 
 TOOLS = [
     {
         "id": "gemini-cli",
-        "name": "Gemini CLI / Codex",
+        "name": "Gemini CLI",
         "user_path": "~/.agents/skills",
         "project_path": ".agents/skills",
+    },
+    {
+        "id": "codex",
+        "name": "OpenAI Codex",
+        "user_path": "~/.codex/skills",
+        "project_path": ".codex/skills",
     },
     {
         "id": "antigravity",

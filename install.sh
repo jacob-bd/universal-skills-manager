@@ -102,7 +102,7 @@ Options:
                     (skips auto-detection)
                      Valid: claude,gemini,antigravity,antigravity-cli,opencode,openclaw,
                             alef-agent,codex,goose,roo,cursor,cline,hermes
-                    (gemini and codex both install to ~/.agents/skills/)
+                    (gemini uses ~/.agents/skills/; codex uses ~/.codex/skills/)
 
 Examples:
   sh install.sh                        # Auto-detect and install
@@ -166,7 +166,8 @@ detect_tools() {
     echo ""
 
     check_tool "Claude Code"        "$HOME/.claude"             "$HOME/.claude/skills"
-    check_tool_gemini_codex
+    check_tool_gemini
+    check_tool_codex
     check_tool "Antigravity"        "$HOME/.gemini/antigravity"      "$HOME/.gemini/antigravity/skills"
     check_tool "Antigravity CLI"    "$HOME/.gemini/antigravity-cli"  "$HOME/.gemini/antigravity-cli/skills"
     check_tool "OpenCode"           "$HOME/.config/opencode"    "$HOME/.config/opencode/skills"
@@ -203,15 +204,25 @@ check_tool() {
     fi
 }
 
-check_tool_gemini_codex() {
-    # Gemini CLI (v0.30+) and OpenAI Codex both use ~/.agents/skills/.
-    # Gemini CLI also reads ~/.gemini/skills/ but gives .agents/ precedence.
-    # We install to ~/.agents/skills/ only to avoid duplicate-skill conflicts.
+check_tool_gemini() {
+    # Gemini CLI (v0.30+) reads ~/.agents/skills/ (and ~/.gemini/skills/, with
+    # .agents/ taking precedence).
     if [ -d "$HOME/.gemini" ] || [ -d "$HOME/.agents" ]; then
-        DETECTED_TOOLS="${DETECTED_TOOLS}Gemini CLI / Codex|${HOME}/.agents/skills
+        DETECTED_TOOLS="${DETECTED_TOOLS}Gemini CLI|${HOME}/.agents/skills
 "
         DETECTED_COUNT=$((DETECTED_COUNT + 1))
-        success "Found: Gemini CLI / Codex"
+        success "Found: Gemini CLI"
+    fi
+}
+
+check_tool_codex() {
+    # OpenAI Codex reads $CODEX_HOME/skills, default ~/.codex/skills.
+    # It does NOT read ~/.agents/skills.
+    if [ -d "$HOME/.codex" ]; then
+        DETECTED_TOOLS="${DETECTED_TOOLS}OpenAI Codex|${CODEX_HOME:-$HOME/.codex}/skills
+"
+        DETECTED_COUNT=$((DETECTED_COUNT + 1))
+        success "Found: OpenAI Codex"
     fi
 }
 
@@ -249,13 +260,13 @@ filter_tools() {
     for short_name in "$@"; do
         case "$short_name" in
             claude)       match="Claude Code" ;;
-            gemini)       match="Gemini CLI / Codex" ;;
+            gemini)       match="Gemini CLI" ;;
             antigravity)     match="Antigravity" ;;
             antigravity-cli) match="Antigravity CLI" ;;
             opencode)     match="OpenCode" ;;
             openclaw)     match="OpenClaw" ;;
             alef-agent)   match="Alef Agent" ;;
-            codex)        match="Gemini CLI / Codex" ;;
+            codex)        match="OpenAI Codex" ;;
             goose)        match="block/goose" ;;
             roo)          match="Roo Code" ;;
             cursor)       match="Cursor" ;;

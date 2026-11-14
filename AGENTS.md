@@ -56,20 +56,20 @@ The skill manages skills across these AI tools and their respective paths:
 
 | Tool | User Scope (Global) | Project Scope (Local) |
 |------|---------------------|----------------------|
-| Gemini CLI / Codex | `~/.agents/skills/` | `./.agents/skills/` |
+| Gemini CLI | `~/.agents/skills/` | `./.agents/skills/` |
+| OpenAI Codex | `~/.codex/skills/` | `./.codex/skills/` |
 | Google Antigravity | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
 | Google Antigravity CLI | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
 | OpenCode | `~/.config/opencode/skills/` | `./.opencode/skills/` |
 | OpenClaw | `~/.openclaw/workspace/skills/` | `./.openclaw/skills/` |
 | Alef Agent | `~/.alef-agent/workspace/skills/` | N/A (daemon, no project scope) |
-| Codex | `~/.Codex/skills/` | `./.Codex/skills/` |
 | block/goose | `~/.config/goose/skills/` | `./.goose/agents/` |
 | Roo Code | `~/.roo/skills/` | `./.roo/skills/` |
 | Cursor | `~/.cursor/skills/` | `./.cursor/skills/` |
 | Cline | `~/.cline/skills/` | `./.cline/skills/` |
 | Hermes Agent | `~/.hermes/skills/` | `./.hermes/skills/` |
 
-*Note: Gemini CLI (v0.30+) and OpenAI Codex both read `~/.agents/skills/`. Gemini CLI also reads `~/.gemini/skills/` but gives `.agents/` higher precedence. We install to `~/.agents/skills/` only to avoid duplicate-skill conflicts.*
+*Note: Gemini CLI (v0.30+) reads both `~/.agents/skills/` and `~/.gemini/skills/`, giving `.agents/` higher precedence, so we install there. OpenAI Codex reads `$CODEX_HOME/skills/` (default `~/.codex/skills/`) and does not read `~/.agents/skills/`, so it has its own target.*
 
 ### Cloud Platform Support (Codex.ai, Codex Desktop, ChatGPT)
 

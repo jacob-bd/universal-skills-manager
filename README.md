@@ -86,7 +86,7 @@ sh /tmp/install.sh --tools claude,gemini
 curl -fsSL https://raw.githubusercontent.com/jacob-bd/universal-skills-manager/main/install.sh | sh -s -- --tools codex
 ```
 
-**Supported `--tools` values:** `claude`, `gemini`, `antigravity`, `antigravity-cli`, `opencode`, `openclaw`, `alef-agent`, `codex`, `goose`, `roo`, `cursor`, `cline`, `hermes` (`gemini` and `codex` both install to `~/.agents/skills/`)
+**Supported `--tools` values:** `claude`, `gemini`, `antigravity`, `antigravity-cli`, `opencode`, `openclaw`, `alef-agent`, `codex`, `goose`, `roo`, `cursor`, `cline`, `hermes` (`gemini` uses `~/.agents/skills/`; `codex` uses `~/.codex/skills/`)
 
 > **Note:** The installer automatically installs to **all** detected AI tools without prompting for confirmation. If you only want to install to specific tools, use the `--tools` flag to target them explicitly.
 
@@ -127,7 +127,8 @@ Once installed, just ask your AI assistant:
 |---------|-------------|------------|
 | **Claude Code** | `~/.claude/skills/` | `./.claude/skills/` |
 | **Cursor** | `~/.cursor/skills/` | `./.cursor/skills/` |
-| **Gemini CLI / Codex** | `~/.agents/skills/` | `./.agents/skills/` |
+| **Gemini CLI** | `~/.agents/skills/` | `./.agents/skills/` |
+| **OpenAI Codex** | `~/.codex/skills/` | `./.codex/skills/` |
 | **Google Antigravity** | `~/.gemini/antigravity/skills/` | `./.antigravity/extensions/` |
 | **Google Antigravity CLI** | `~/.gemini/antigravity-cli/skills/` | `./.agents/skills/` |
 | **OpenCode** | `~/.config/opencode/skills/` | `./.opencode/skills/` |

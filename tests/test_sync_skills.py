@@ -274,6 +274,35 @@ def test_detect_tools_ignores_missing(tmp_path):
     assert detected == []
 
 
+def test_codex_reads_codex_home_not_agents(tmp_path):
+    """Codex uses $CODEX_HOME/skills; Gemini CLI keeps ~/.agents/skills."""
+    make_tool_dir(tmp_path, ".agents/skills")
+    make_tool_dir(tmp_path, ".codex/skills")
+
+    by_id = {t["id"]: t for t in detect_tools(home=tmp_path)}
+
+    assert by_id["gemini-cli"]["path"] == tmp_path / ".agents/skills"
+    assert by_id["codex"]["path"] == tmp_path / ".codex/skills"
+
+
+def test_codex_not_detected_from_agents_only(tmp_path):
+    """A ~/.agents/skills directory must not make Codex look installed."""
+    make_tool_dir(tmp_path, ".agents/skills")
+
+    ids = [t["id"] for t in detect_tools(home=tmp_path)]
+
+    assert "gemini-cli" in ids
+    assert "codex" not in ids
+
+
+def test_tool_registry_keeps_codex_separate():
+    """The registry must not merge Gemini CLI and Codex onto one path."""
+    by_id = {t["id"]: t for t in TOOLS}
+
+    assert by_id["gemini-cli"]["user_path"] == "~/.agents/skills"
+    assert by_id["codex"]["user_path"] == "~/.codex/skills"
+
+
 def test_detect_tools_project_scope(tmp_path):
     """Detects project-level tool directories when project_dir is provided."""
     project = tmp_path / "my-project"
